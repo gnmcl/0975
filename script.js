@@ -21,9 +21,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const balanceSection = document.getElementById("balanceSection");
     const balanceAmount = document.getElementById("balanceAmount");
     const balanceTier = document.getElementById("balanceTier");
+    const eventSpoiler = document.getElementById("eventSpoiler");
+    const eventLock = document.getElementById("eventLock");
+    const eventCopy = document.getElementById("eventCopy");
+    const eventCountdown = document.getElementById("eventCountdown");
+    const spoilerBtn = document.getElementById("spoilerBtn");
+    const spoilerReveal = document.getElementById("spoilerReveal");
 
     let selectedAmount = null;
     let isConnecting = false;
+    let spoilerUnlocked = false;
+    let spoilerExpanded = false;
     let stepTimer = null;
     let flashStartTimer = null;
     let flashFadeTimer = null;
@@ -60,6 +68,44 @@ document.addEventListener("DOMContentLoaded", () => {
         clockHome.textContent = `${hours}:${minutes}`;
     };
 
+    const getDaysToApril25 = () => {
+        const now = new Date();
+        const eventDate = new Date(now.getFullYear(), 3, 25, 23, 59, 59);
+        if (now > eventDate) {
+            eventDate.setFullYear(eventDate.getFullYear() + 1);
+        }
+        const diff = eventDate.getTime() - now.getTime();
+        return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    };
+
+    const updateEventCountdown = () => {
+        const daysLeft = getDaysToApril25();
+        eventCountdown.textContent = `Mancano ${daysLeft} giorni al 25 Aprile`;
+    };
+
+    const unlockSpoiler = () => {
+        spoilerUnlocked = true;
+        spoilerExpanded = true;
+        eventSpoiler.dataset.unlocked = "true";
+        eventSpoiler.classList.remove("is-hint", "is-peek", "is-collapsed");
+        eventSpoiler.classList.add("is-unlocked", "is-expanded");
+        eventLock.textContent = "SBLOCCATO";
+        eventCopy.textContent = "Ricarica completata. Sei in lista per la prossima serata.";
+        spoilerBtn.textContent = "Nascondi spoiler";
+        spoilerReveal.setAttribute("aria-hidden", "false");
+    };
+
+    const teaserSpoiler = () => {
+        eventSpoiler.classList.remove("is-hint");
+        eventSpoiler.classList.add("is-hint", "is-peek");
+        eventCopy.textContent = selectedAmount
+            ? `Taglio ${selectedAmount}€ selezionato. Premi ENTRA IN LINEA per sbloccare lo spoiler del 25 Aprile.`
+            : "Seleziona una ricarica e connettiti per sbloccare lo spoiler del 25 Aprile.";
+        setTimeout(() => {
+            eventSpoiler.classList.remove("is-hint", "is-peek");
+        }, 1000);
+    };
+
     const openApp = (appName) => {
         if (appName === "0975") {
             homeScreen.classList.add("hidden");
@@ -79,6 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
         meterFill.style.width = "12%";
         connectBtn.disabled = true;
         connectBtn.textContent = "ENTRA IN LINEA";
+        if (!spoilerUnlocked) {
+            eventCopy.textContent = "Effettua una ricarica per partecipare alla prossima serata.";
+        }
     };
 
     const setSelectedState = () => {
@@ -87,6 +136,9 @@ document.addEventListener("DOMContentLoaded", () => {
         meterFill.style.width = `${Math.min(85, 25 + selectedAmount)}%`;
         connectBtn.disabled = false;
         connectBtn.textContent = "ENTRA IN LINEA";
+        if (!spoilerUnlocked) {
+            eventCopy.textContent = `Taglio ${selectedAmount}€ pronto. Connettiti per sbloccare lo spoiler del 25 Aprile.`;
+        }
     };
 
     const toggleOverlay = (isVisible) => {
@@ -149,6 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
             balanceAmount.textContent = `${selectedAmount}€`;
             balanceTier.textContent = activeProfile.tier;
             balanceSection.classList.remove("hidden");
+            unlockSpoiler();
 
             // Keep top content fixed when the balance card is injected.
             shell.scrollTop = 0;
@@ -215,6 +268,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     connectBtn.addEventListener("click", startConnection);
 
+    spoilerBtn.addEventListener("click", () => {
+        if (!spoilerUnlocked) {
+            teaserSpoiler();
+            return;
+        }
+
+        spoilerExpanded = !spoilerExpanded;
+        eventSpoiler.classList.toggle("is-expanded", spoilerExpanded);
+        eventSpoiler.classList.toggle("is-collapsed", !spoilerExpanded);
+        spoilerBtn.textContent = spoilerExpanded ? "Nascondi spoiler" : "Mostra spoiler";
+        spoilerReveal.setAttribute("aria-hidden", String(!spoilerExpanded));
+    });
+
     cancelBtn.addEventListener("click", () => {
         if (!isConnecting) return;
 
@@ -238,5 +304,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateClock();
     setInterval(updateClock, 1000);
+    updateEventCountdown();
     setIdleState();
 });
