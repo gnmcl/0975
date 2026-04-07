@@ -76,7 +76,7 @@
                 </div>
                 <p class="ios-label">Impostazioni</p>
             </button>
-            <button class="ios-app ios-app-inactive">
+            <button class="ios-app" id="appContacts" data-app="contacts">
                 <div class="ios-icon ios-icon-fake">
                     <span>👤</span>
                 </div>
@@ -171,6 +171,34 @@
             </button>
             <p class="cta-help">La connessione parte solo dopo la selezione del taglio.</p>
         </footer>
+    </main>
+
+    <main class="sim-shell contacts-shell hidden" id="contactsShell">
+        <header class="phone-ui">
+            <button id="contactsBackBtn" class="back-btn" type="button" title="Indietro">← Indietro</button>
+            <div class="status-left">
+                <strong id="clockContacts">00:00</strong>
+                <span class="operator">0975</span>
+            </div>
+            <div class="status-center">CONTATTI</div>
+            <div class="status-right" aria-hidden="true">
+                <span class="bars">
+                    <i></i><i></i><i></i><i></i>
+                </span>
+                <span class="battery">96%</span>
+            </div>
+        </header>
+
+        <section class="contacts-panel" aria-label="Lista contatti telefono">
+            <p class="contacts-kicker">RUBRICA 0975</p>
+            <ul class="contacts-list">
+                <li class="contact-row"><span class="contact-dot" aria-hidden="true"></span><span>Modesto</span></li>
+                <li class="contact-row"><span class="contact-dot" aria-hidden="true"></span><span>Chiara</span></li>
+                <li class="contact-row"><span class="contact-dot" aria-hidden="true"></span><span>Antonio</span></li>
+                <li class="contact-row"><span class="contact-dot" aria-hidden="true"></span><span>Mattia</span></li>
+                <li class="contact-row"><span class="contact-dot" aria-hidden="true"></span><span>Carlo</span></li>
+            </ul>
+        </section>
     </main>
 
     <div class="profile-overlay hidden" id="profileOverlay" aria-hidden="true">

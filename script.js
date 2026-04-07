@@ -6,11 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const homeScreen = document.getElementById("homeScreen");
     const simShell = document.getElementById("simShell");
+    const contactsShell = document.getElementById("contactsShell");
     const app0975 = document.getElementById("app0975");
+    const appContacts = document.getElementById("appContacts");
     const app0975Badge = document.getElementById("app0975Badge");
     const backBtn = document.getElementById("backBtn");
+    const contactsBackBtn = document.getElementById("contactsBackBtn");
     const clock = document.getElementById("clock");
     const clockHome = document.getElementById("clockHome");
+    const clockContacts = document.getElementById("clockContacts");
     const cards = document.querySelectorAll(".amount-card");
     const connectBtn = document.getElementById("connectBtn");
     const statusMessage = document.getElementById("statusMessage");
@@ -79,6 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const minutes = String(now.getMinutes()).padStart(2, "0");
         clock.textContent = `${hours}:${minutes}`;
         clockHome.textContent = `${hours}:${minutes}`;
+        if (clockContacts) {
+            clockContacts.textContent = `${hours}:${minutes}`;
+        }
     };
 
     const getStoredProfile = () => {
@@ -239,22 +246,35 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const openApp = (appName) => {
+        homeScreen.classList.add("hidden");
+        simShell.classList.add("hidden");
+        contactsShell.classList.add("hidden");
+
         if (appName === "0975") {
             if (app0975Badge) {
                 app0975.setAttribute("aria-label", "0975 Events");
                 app0975.classList.add("badge-cleared");
             }
-            homeScreen.classList.add("hidden");
             simShell.classList.remove("hidden");
+            return;
+        }
+
+        if (appName === "contacts") {
+            contactsShell.classList.remove("hidden");
         }
     };
 
     app0975.addEventListener("click", () => openApp("0975"));
+    appContacts.addEventListener("click", () => openApp("contacts"));
 
-    backBtn.addEventListener("click", () => {
+    const goHome = () => {
         simShell.classList.add("hidden");
+        contactsShell.classList.add("hidden");
         homeScreen.classList.remove("hidden");
-    });
+    };
+
+    backBtn.addEventListener("click", goHome);
+    contactsBackBtn.addEventListener("click", goHome);
 
     const setIdleState = () => {
         statusMessage.textContent = "Seleziona una ricarica per attivare la connessione.";

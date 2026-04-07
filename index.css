@@ -848,6 +848,55 @@ body {
     color: #c9ffc9;
 }
 
+.contacts-shell {
+    gap: 12px;
+}
+
+.contacts-panel {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: linear-gradient(160deg, rgba(14, 14, 14, 0.7), rgba(8, 8, 8, 0.58));
+    padding: 14px;
+    display: grid;
+    gap: 10px;
+    backdrop-filter: blur(5px);
+}
+
+.contacts-kicker {
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #ffb7b7;
+}
+
+.contacts-list {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.contact-row {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    padding: 11px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #f6f6f6;
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.contact-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff3e3e;
+    box-shadow: 0 0 10px rgba(255, 62, 62, 0.45);
+}
+
 .profile-overlay {
     position: fixed;
     inset: 0;
