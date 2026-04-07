@@ -262,6 +262,21 @@ body {
     border-radius: inherit;
 }
 
+.credit-footer {
+    position: fixed;
+    left: 50%;
+    bottom: max(6px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245, 245, 245, 0.46);
+    z-index: 40;
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
 .sim-shell {
     width: min(100%, 440px);
     height: min(calc(100dvh - 24px), 900px);
