@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const SUPABASE_URL = "https://pmstsocezwmxffcumjib.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_7QT6Pvv5JE_gggzRWNjMpg_9mAR8Z74";
+    const PROFILE_STORAGE_KEY = "profile0975";
+    const USER_ID_STORAGE_KEY = "userId0975";
+
     const homeScreen = document.getElementById("homeScreen");
     const simShell = document.getElementById("simShell");
     const app0975 = document.getElementById("app0975");
@@ -28,6 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const eventCountdown = document.getElementById("eventCountdown");
     const spoilerBtn = document.getElementById("spoilerBtn");
     const spoilerReveal = document.getElementById("spoilerReveal");
+    const profileOverlay = document.getElementById("profileOverlay");
+    const nameInput = document.getElementById("nameInput");
+    const consentCheckbox = document.getElementById("consentCheckbox");
+    const profileError = document.getElementById("profileError");
+    const profileSaveBtn = document.getElementById("profileSaveBtn");
+    const profileCancelBtn = document.getElementById("profileCancelBtn");
 
     let selectedAmount = null;
     let isConnecting = false;
@@ -37,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let flashStartTimer = null;
     let flashFadeTimer = null;
     let flashResetTimer = null;
+    let pendingConnection = false;
 
     const lineProfiles = {
         5: {
@@ -67,6 +79,125 @@ document.addEventListener("DOMContentLoaded", () => {
         const minutes = String(now.getMinutes()).padStart(2, "0");
         clock.textContent = `${hours}:${minutes}`;
         clockHome.textContent = `${hours}:${minutes}`;
+    };
+
+    const getStoredProfile = () => {
+        try {
+            const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (!saved) return null;
+            const parsed = JSON.parse(saved);
+            if (!parsed?.name || !parsed?.consentAcceptedAt) return null;
+            return parsed;
+        } catch {
+            return null;
+        }
+    };
+
+    const saveProfile = (profile) => {
+        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    };
+
+    const toggleProfileOverlay = (isVisible) => {
+        profileOverlay.classList.toggle("hidden", !isVisible);
+        profileOverlay.setAttribute("aria-hidden", String(!isVisible));
+        if (isVisible) {
+            requestAnimationFrame(() => nameInput?.focus());
+        }
+    };
+
+    const openProfileOverlay = () => {
+        const profile = getStoredProfile();
+        nameInput.value = profile?.name ?? "";
+        consentCheckbox.checked = Boolean(profile?.consentAcceptedAt);
+        profileError.textContent = "";
+        toggleProfileOverlay(true);
+    };
+
+    const closeProfileOverlay = () => {
+        pendingConnection = false;
+        profileError.textContent = "";
+        toggleProfileOverlay(false);
+    };
+
+    const normalizeProfileName = (name) => {
+        return name.trim().replace(/\s+/g, " ");
+    };
+
+    const getOrCreateUserId = () => {
+        let userId = localStorage.getItem(USER_ID_STORAGE_KEY);
+        if (userId) return userId;
+
+        userId =
+            typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+                ? crypto.randomUUID()
+                : `uid_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+        localStorage.setItem(USER_ID_STORAGE_KEY, userId);
+        return userId;
+    };
+
+    const formatHumanTimestamp = (date) => {
+        return new Intl.DateTimeFormat("it-IT", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        }).format(date);
+    };
+
+    const buildTrackingPayload = (profileName) => {
+        const now = new Date();
+        return {
+            timestamp: formatHumanTimestamp(now),
+            user_id: getOrCreateUserId(),
+            name: normalizeProfileName(profileName),
+            amount: selectedAmount,
+            tier: lineProfiles[selectedAmount]?.tier ?? "LINEA NOTTE",
+        };
+    };
+
+    const hasExistingRecharge = async (profileName) => {
+        const userId = getOrCreateUserId();
+        const endpoint = `${SUPABASE_URL}/rest/v1/recharge_events?select=user_id&user_id=eq.${encodeURIComponent(userId)}&limit=1`;
+
+        const response = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Lookup Supabase fallita (${response.status})`);
+        }
+
+        const rows = await response.json();
+        return Array.isArray(rows) && rows.length > 0;
+    };
+
+    const trackEvent = async (payload) => {
+        try {
+            await fetch(`${SUPABASE_URL}/rest/v1/recharge_events`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    apikey: SUPABASE_KEY,
+                    Authorization: `Bearer ${SUPABASE_KEY}`,
+                },
+                body: JSON.stringify({
+                    user_id: payload.user_id,
+                    name: payload.name,
+                    amount: payload.amount,
+                    tier: payload.tier,
+                    created_at: new Date().toISOString(),
+                }),
+            });
+        } catch (error) {
+            console.error("Errore Supabase:", error);
+        }
     };
 
     const getDaysToApril25 = () => {
@@ -255,6 +386,46 @@ document.addEventListener("DOMContentLoaded", () => {
         runStep();
     };
 
+    const completeProfileAndConnect = async () => {
+        const typedName = normalizeProfileName(nameInput.value);
+        if (typedName.length < 2) {
+            profileError.textContent = "Inserisci un nome valido (almeno 2 caratteri).";
+            return;
+        }
+
+        if (!consentCheckbox.checked) {
+            profileError.textContent = "Per continuare devi accettare il consenso.";
+            return;
+        }
+
+        try {
+            const alreadyRecharged = await hasExistingRecharge();
+            if (alreadyRecharged) {
+                profileError.textContent = "Hai gia effettuato una ricarica con questo dispositivo.";
+                return;
+            }
+        } catch (error) {
+            profileError.textContent = "Errore verifica ricarica. Riprova tra poco.";
+            console.error(error);
+            return;
+        }
+
+        const profile = {
+            name: typedName,
+            consentAcceptedAt: new Date().toISOString(),
+        };
+        saveProfile(profile);
+        toggleProfileOverlay(false);
+
+        const payload = buildTrackingPayload(typedName);
+        trackEvent(payload);
+
+        if (pendingConnection) {
+            pendingConnection = false;
+            startConnection();
+        }
+    };
+
     cards.forEach((card) => {
         card.addEventListener("click", () => {
             if (isConnecting || connectBtn.classList.contains("is-connected")) return;
@@ -271,7 +442,52 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    connectBtn.addEventListener("click", startConnection);
+    connectBtn.addEventListener("click", async () => {
+        if (!selectedAmount || isConnecting) return;
+        if (connectBtn.classList.contains("is-connected")) return;
+
+        const profile = getStoredProfile();
+        if (!profile) {
+            pendingConnection = true;
+            openProfileOverlay();
+            return;
+        }
+
+        try {
+            const alreadyRecharged = await hasExistingRecharge();
+            if (alreadyRecharged) {
+                statusMessage.textContent = "Ricarica gia registrata per questo dispositivo.";
+                meterFill.style.width = "100%";
+                connectBtn.disabled = true;
+                connectBtn.textContent = "RICARICA GIA EFFETTUATA";
+                return;
+            }
+        } catch (error) {
+            statusMessage.textContent = "Errore verifica ricarica. Riprova.";
+            console.error(error);
+            return;
+        }
+
+        const payload = buildTrackingPayload(profile.name);
+        trackEvent(payload);
+        startConnection();
+    });
+
+    profileSaveBtn.addEventListener("click", completeProfileAndConnect);
+    profileCancelBtn.addEventListener("click", closeProfileOverlay);
+
+    profileOverlay.addEventListener("click", (event) => {
+        if (event.target === profileOverlay) {
+            closeProfileOverlay();
+        }
+    });
+
+    nameInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            completeProfileAndConnect();
+        }
+    });
 
     spoilerBtn.addEventListener("click", () => {
         if (!spoilerUnlocked) {

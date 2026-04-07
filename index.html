@@ -173,6 +173,29 @@
         </footer>
     </main>
 
+    <div class="profile-overlay hidden" id="profileOverlay" aria-hidden="true">
+        <div class="profile-card" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+            <p class="profile-kicker">0975 CHECK-IN</p>
+            <h3 id="profileTitle">Inserisci il tuo nome</h3>
+            <p class="profile-copy">Prima di entrare in linea, salva i dati minimi di check-in.</p>
+
+            <label class="profile-label" for="nameInput">Nome</label>
+            <input id="nameInput" class="profile-input" name="name" type="text" maxlength="40" autocomplete="name" placeholder="Es. Marco" required>
+
+            <label class="consent-row" for="consentCheckbox">
+                <input id="consentCheckbox" type="checkbox" required>
+                <span>Accetto il consenso al trattamento dei dati personali per finalita organizzative dell'evento.</span>
+            </label>
+
+            <p class="profile-error" id="profileError" aria-live="polite"></p>
+
+            <div class="profile-actions">
+                <button id="profileCancelBtn" class="profile-btn profile-btn-ghost" type="button">Annulla</button>
+                <button id="profileSaveBtn" class="profile-btn" type="button">Conferma</button>
+            </div>
+        </div>
+    </div>
+
     <div class="overlay hidden" id="connectOverlay" aria-hidden="true">
         <div class="overlay-card">
             <p class="overlay-kicker">0975 CALLING</p>
