@@ -150,8 +150,14 @@ document.addEventListener("DOMContentLoaded", () => {
             balanceTier.textContent = activeProfile.tier;
             balanceSection.classList.remove("hidden");
 
-            // Keep the top cards fully visible when the active balance card is injected.
-            shell.scrollTo({ top: 0, behavior: "smooth" });
+            // Keep top content fixed when the balance card is injected.
+            shell.scrollTop = 0;
+            requestAnimationFrame(() => {
+                shell.scrollTop = 0;
+            });
+            setTimeout(() => {
+                shell.scrollTop = 0;
+            }, 120);
         }, 2000);
     };
 

@@ -203,7 +203,8 @@ body {
         var(--card);
     border-radius: 28px;
     padding: 14px;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 14px;
     box-shadow:
         0 24px 40px rgba(0, 0, 0, 0.5),
@@ -212,8 +213,18 @@ body {
     isolation: isolate;
     z-index: 2;
     overflow-y: auto;
-    align-content: start;
     scrollbar-width: thin;
+    overflow-anchor: none;
+}
+
+.sim-shell > * {
+    flex-shrink: 0;
+}
+
+.hero {
+    min-height: 158px;
+    display: grid;
+    align-content: start;
 }
 
 .sim-shell.is-connecting {
