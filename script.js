@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const setSelectedState = () => {
         const profile = lineProfiles[selectedAmount];
-        statusMessage.textContent = `${profile.message} Taglio ${selectedAmount}€ · ${profile.tier}.`;
+        statusMessage.textContent = `${profile.message}`;
         meterFill.style.width = `${Math.min(85, 25 + selectedAmount)}%`;
         connectBtn.disabled = false;
         connectBtn.textContent = "ENTRA IN LINEA";
