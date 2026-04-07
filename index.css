@@ -106,6 +106,42 @@ body {
     transform: scale(0.92);
 }
 
+#app0975 {
+    isolation: isolate;
+}
+
+#app0975 .ios-icon {
+    animation: appPulse 3s ease-in-out infinite, appHop 2.8s cubic-bezier(0.22, 0.8, 0.22, 1) infinite;
+    transform-origin: center bottom;
+}
+
+.ios-notification-badge {
+    position: absolute;
+    top: -3px;
+    right: 4px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    background: linear-gradient(180deg, #ff5d5d, #d40a0a);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.38), 0 0 16px rgba(255, 31, 31, 0.52);
+    z-index: 2;
+    animation: badgePing 1.9s ease-in-out infinite;
+}
+
+#app0975.badge-cleared .ios-notification-badge {
+    opacity: 0;
+    transform: scale(0.75);
+    pointer-events: none;
+    transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
 .ios-icon {
     width: 76px;
     height: 76px;
@@ -1147,6 +1183,40 @@ body {
     }
     50% {
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.12), 0 0 24px rgba(255, 31, 31, 0.25);
+    }
+}
+
+@keyframes appHop {
+    0%,
+    58%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+    65% {
+        transform: translateY(-8px) scale(1.02);
+    }
+    72% {
+        transform: translateY(0) scale(0.99);
+    }
+    79% {
+        transform: translateY(-4px) scale(1.01);
+    }
+    86% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes badgePing {
+    0%,
+    55%,
+    100% {
+        transform: scale(1);
+    }
+    66% {
+        transform: scale(1.08);
+    }
+    76% {
+        transform: scale(0.97);
     }
 }
 

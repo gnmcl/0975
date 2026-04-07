@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const homeScreen = document.getElementById("homeScreen");
     const simShell = document.getElementById("simShell");
     const app0975 = document.getElementById("app0975");
+    const app0975Badge = document.getElementById("app0975Badge");
     const backBtn = document.getElementById("backBtn");
     const clock = document.getElementById("clock");
     const clockHome = document.getElementById("clockHome");
@@ -108,6 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const openApp = (appName) => {
         if (appName === "0975") {
+            if (app0975Badge) {
+                app0975.setAttribute("aria-label", "0975 Events");
+                app0975.classList.add("badge-cleared");
+            }
             homeScreen.classList.add("hidden");
             simShell.classList.remove("hidden");
         }
