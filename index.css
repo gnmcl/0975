@@ -21,6 +21,7 @@
 
 html,
 body {
+    height: 100%;
     min-height: 100%;
 }
 
@@ -32,20 +33,25 @@ body {
     color: var(--text);
     font-family: var(--font-ui);
     min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
     overflow: hidden;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 12px;
+    padding:
+        max(12px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(12px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
 }
 
 .ios-homescreen {
     display: flex;
     flex-direction: column;
     width: min(100%, 440px);
-    height: min(calc(100vh - 24px), 900px);
+    height: min(calc(100dvh - 24px), 900px);
     background: linear-gradient(180deg, #0a0a0a, #1a0a0a);
     border-radius: 28px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -80,6 +86,7 @@ body {
     padding: 14px 6px 8px;
     align-content: start;
     overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 .ios-app {
@@ -189,7 +196,7 @@ body {
 
 .sim-shell {
     width: min(100%, 440px);
-    height: min(calc(100vh - 24px), 900px);
+    height: min(calc(100dvh - 24px), 900px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     background:
         linear-gradient(180deg, rgba(255, 31, 31, 0.12) 0%, transparent 25%),
@@ -206,6 +213,7 @@ body {
     z-index: 2;
     overflow-y: auto;
     align-content: start;
+    scrollbar-width: thin;
 }
 
 .sim-shell.is-connecting {
@@ -265,6 +273,7 @@ body {
     color: #f0f0f0;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .status-right {
@@ -484,6 +493,7 @@ body {
     font-size: 1.04rem;
     font-weight: 600;
     min-height: 2lh;
+    overflow-wrap: anywhere;
 }
 
 .status-meter {
@@ -791,7 +801,7 @@ body {
     .sim-shell,
     .ios-homescreen {
         width: min(100%, 470px);
-        height: min(calc(100vh - 44px), 920px);
+        height: min(calc(100dvh - 44px), 920px);
         border-radius: 34px;
         padding: 18px;
         gap: 16px;
@@ -807,6 +817,94 @@ body {
 
     .amount-grid {
         gap: 12px;
+    }
+}
+
+@media (max-width: 420px) {
+    body {
+        padding:
+            max(8px, env(safe-area-inset-top))
+            max(8px, env(safe-area-inset-right))
+            max(8px, env(safe-area-inset-bottom))
+            max(8px, env(safe-area-inset-left));
+    }
+
+    .sim-shell,
+    .ios-homescreen {
+        border-radius: 22px;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .phone-ui {
+        padding: 8px 9px;
+        gap: 8px;
+    }
+
+    .status-center {
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+    }
+
+    .operator,
+    .battery {
+        font-size: 0.7rem;
+    }
+
+    .ios-grid {
+        gap: 14px;
+        padding: 8px 2px 4px;
+    }
+
+    .ios-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+    }
+
+    .ios-label {
+        font-size: 0.74rem;
+        max-width: 74px;
+    }
+
+    .hero,
+    .recharge,
+    .line-status,
+    .balance-section {
+        padding: 12px;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 11vw, 3.1rem);
+    }
+
+    .subtitle,
+    .status-message {
+        font-size: 0.95rem;
+    }
+
+    .connect-btn {
+        font-size: 1.2rem;
+        padding: 12px 14px;
+    }
+}
+
+@media (max-width: 360px) {
+    .status-center {
+        display: none;
+    }
+
+    .back-btn {
+        font-size: 0.68rem;
+        padding: 3px 6px;
+    }
+
+    .ios-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .amount-grid {
+        grid-template-columns: 1fr;
     }
 }
 
