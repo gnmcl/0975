@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0975 Events | Ricarica la tua notte</title>
+    <meta name="description" content="0975 Events: ricarica la tua SIM e connettiti alla notte.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="stage-glow" aria-hidden="true"></div>
+    <div class="bg-logo-orb" aria-hidden="true">
+        <img src="0975.webp" alt="">
+    </div>
+
+    <screen class="ios-homescreen" id="homeScreen">
+        <header class="phone-ui">
+            <div class="status-left">
+                <strong id="clockHome">00:00</strong>
+                <span class="operator">0975</span>
+            </div>
+            <div class="status-center">LINEA NOTTE</div>
+            <div class="status-right" aria-hidden="true">
+                <span class="bars">
+                    <i></i><i></i><i></i><i></i>
+                </span>
+                <span class="battery">96%</span>
+            </div>
+        </header>
+        <div class="ios-grid">
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>☎</span>
+                </div>
+                <p class="ios-label">Telefono</p>
+            </button>
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>💬</span>
+                </div>
+                <p class="ios-label">Messaggi</p>
+            </button>
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>📞</span>
+                </div>
+                <p class="ios-label">FaceTime</p>
+            </button>
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>📸</span>
+                </div>
+                <p class="ios-label">Fotocamera</p>
+            </button>
+            
+            <button class="ios-app" id="app0975" data-app="0975">
+                <div class="ios-icon">
+                    <img src="0975.webp" alt="0975 Events">
+                </div>
+                <p class="ios-label">0975 Events</p>
+            </button>
+            
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>🖼</span>
+                </div>
+                <p class="ios-label">Foto</p>
+            </button>
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>⚙️</span>
+                </div>
+                <p class="ios-label">Impostazioni</p>
+            </button>
+            <button class="ios-app ios-app-inactive">
+                <div class="ios-icon ios-icon-fake">
+                    <span>👤</span>
+                </div>
+                <p class="ios-label">Contatti</p>
+            </button>
+        </div>
+    </screen>
+
+    <main class="sim-shell hidden" id="simShell">
+        <header class="phone-ui">
+            <button id="backBtn" class="back-btn" type="button" title="Indietro">← Indietro</button>
+            <div class="status-left">
+                <strong id="clock">00:00</strong>
+                <span class="operator">0975</span>
+            </div>
+            <div class="status-center">LINEA NOTTE</div>
+            <div class="status-right" aria-hidden="true">
+                <span class="bars">
+                    <i></i><i></i><i></i><i></i>
+                </span>
+                <span class="battery">96%</span>
+            </div>
+        </header>
+
+        <section class="hero">
+            <p class="kicker">SOUTH CONNECTION</p>
+            <h1>0975 EVENTS</h1>
+            <p class="subtitle">Ricarica la tua SIM. Entra nella linea 0975 e attiva la notte.</p>
+        </section>
+
+        <section class="recharge" aria-label="Tagli di ricarica">
+            <div class="section-head">
+                <h2>Seleziona taglio</h2>
+                <span class="live-dot" aria-hidden="true"></span>
+            </div>
+
+            <div class="amount-grid" id="amountGrid">
+                <button class="amount-card" data-amount="5" type="button" aria-pressed="false">
+                    <span class="euro">5€</span>
+                    <span class="label">Ingresso Base</span>
+                </button>
+                <button class="amount-card" data-amount="10" type="button" aria-pressed="false">
+                    <span class="euro">10€</span>
+                    <span class="label">Linea Core</span>
+                </button>
+                <button class="amount-card" data-amount="15" type="button" aria-pressed="false">
+                    <span class="euro">15€</span>
+                    <span class="label">Night Boost</span>
+                </button>
+                <button class="amount-card" data-amount="20" type="button" aria-pressed="false">
+                    <span class="euro">20€</span>
+                    <span class="label">Segnale Full</span>
+                </button>
+                <button class="amount-card amount-vip" data-amount="50" type="button" aria-pressed="false">
+                    <span class="vip-tag">VIP</span>
+                    <span class="euro">50€</span>
+                    <span class="label">All Access</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="line-status" id="statusPanel" aria-live="polite">
+            <p class="status-title">Stato linea</p>
+            <p id="statusMessage" class="status-message">Seleziona una ricarica per attivare la connessione.</p>
+            <div class="status-meter" aria-hidden="true">
+                <span id="meterFill"></span>
+            </div>
+        </section>
+
+        <section class="balance-section hidden" id="balanceSection">
+            <p class="balance-title">Saldo attivo</p>
+            <p class="balance-amount" id="balanceAmount">0€</p>
+            <p class="balance-tier" id="balanceTier">LINEA NOTTE</p>
+        </section>
+
+        <footer class="cta-wrap">
+            <button id="connectBtn" class="connect-btn" type="button" disabled>
+                ENTRA IN LINEA
+            </button>
+            <p class="cta-help">La connessione parte solo dopo la selezione del taglio.</p>
+        </footer>
+    </main>
+
+    <div class="overlay hidden" id="connectOverlay" aria-hidden="true">
+        <div class="overlay-card">
+            <p class="overlay-kicker">0975 CALLING</p>
+            <h3 id="overlayTitle">Connessione in corso...</h3>
+            <p id="overlayText">Ricerca segnale clubbing</p>
+            <div class="call-loader" aria-hidden="true">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="progress">
+                <span id="progressFill"></span>
+            </div>
+            <button id="cancelBtn" class="cancel-btn" type="button">Annulla</button>
+        </div>
+    </div>
+
+    <div class="success-flash hidden" id="successFlash" aria-hidden="true">
+        <div class="success-card">
+            <p class="success-kicker">0975 CONNECTED</p>
+            <h2>SEI IN LINEA</h2>
+            <p class="success-sub">Connessione alla notte attiva</p>
+            <p class="success-meta" id="successMeta">TAGLIO 0€ · LINEA NOTTE</p>
+            <div class="success-signal" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
