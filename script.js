@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const SUPABASE_KEY = "sb_publishable_7QT6Pvv5JE_gggzRWNjMpg_9mAR8Z74";
     const PROFILE_STORAGE_KEY = "profile0975";
     const USER_ID_STORAGE_KEY = "userId0975";
+    const SPOILER_UNLOCK_PREFIX = "spoilerUnlocked0975";
 
     const homeScreen = document.getElementById("homeScreen");
     const simShell = document.getElementById("simShell");
@@ -143,6 +144,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return userId;
     };
 
+    const getSpoilerStorageKey = () => {
+        return `${SPOILER_UNLOCK_PREFIX}:${getOrCreateUserId()}`;
+    };
+
+    const isSpoilerStoredUnlocked = () => {
+        return localStorage.getItem(getSpoilerStorageKey()) === "1";
+    };
+
+    const markSpoilerStoredUnlocked = () => {
+        localStorage.setItem(getSpoilerStorageKey(), "1");
+    };
+
     const formatHumanTimestamp = (date) => {
         return new Intl.DateTimeFormat("it-IT", {
             day: "2-digit",
@@ -225,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const unlockSpoiler = () => {
         spoilerUnlocked = true;
         spoilerExpanded = true;
+        markSpoilerStoredUnlocked();
         eventSpoiler.dataset.unlocked = "true";
         eventSpoiler.classList.remove("is-hint", "is-peek", "is-collapsed");
         eventSpoiler.classList.add("is-unlocked", "is-expanded");
@@ -421,6 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const alreadyRecharged = await hasExistingRecharge();
             if (alreadyRecharged) {
+                unlockSpoiler();
                 profileError.textContent = "Hai gia effettuato una ricarica con questo dispositivo.";
                 return;
             }
@@ -476,6 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const alreadyRecharged = await hasExistingRecharge();
             if (alreadyRecharged) {
+                unlockSpoiler();
                 statusMessage.textContent = "Ricarica gia registrata per questo dispositivo.";
                 meterFill.style.width = "100%";
                 connectBtn.disabled = true;
@@ -546,5 +562,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateClock();
     setInterval(updateClock, 1000);
     updateEventCountdown();
+    if (isSpoilerStoredUnlocked()) {
+        unlockSpoiler();
+    }
     setIdleState();
 });
