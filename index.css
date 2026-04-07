@@ -63,6 +63,7 @@ body {
         0 0 40px rgba(255, 31, 31, 0.2);
     padding: 14px;
     gap: 14px;
+    overflow-x: hidden;
 }
 
 .ios-homescreen::before,
@@ -278,8 +279,11 @@ body {
     isolation: isolate;
     z-index: 2;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: thin;
     overflow-anchor: none;
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
 }
 
 .sim-shell > * {
